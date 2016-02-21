@@ -13,7 +13,7 @@ namespace pCarsRelative
     public partial class Form1 : Form
     {
         private DispatcherTimer dispatchTimer = new DispatcherTimer();
-        private pCarsDataClass pcarsData = new pCarsDataClass();
+        private pCarsDataClass pcarsData;
 
         public Form1()
         {
@@ -32,6 +32,7 @@ namespace pCarsRelative
 
         private void pCarsDataGetterLoop(object sender, EventArgs e)
         {
+            pcarsData = new pCarsDataClass();
             int myIndex = 0;
             pCarsDataClass.pCarsParticipantsClass me = new pCarsDataClass.pCarsParticipantsClass();
 
@@ -99,6 +100,7 @@ namespace pCarsRelative
 
                     int hisDist = (int)((item.parCurrentLap - 1) * pcarsData.mTrackLength + item.parCurrentLapDistance);
                     int myDist = (int)((me.parCurrentLap - 1) * pcarsData.mTrackLength + me.parCurrentLapDistance);
+                    int deltaDist = hisDist - myDist;
 
                     if (j == middle + 1)
                     {
@@ -106,27 +108,31 @@ namespace pCarsRelative
                     }
                     else
                     {
-                        if (hisDist - myDist > pcarsData.mTrackLength)
+                        if (deltaDist > 0)
                         {
-                            color = Color.Firebrick;
+                            if (deltaDist > pcarsData.mTrackLength || j > middle + 1)
+                            {
+                                color = Color.Firebrick;
+                            }
                         }
-                        else if (hisDist - myDist > 0 && j > middle + 1)
+                        else if(deltaDist < 0)
                         {
-                            color = Color.Firebrick;
+                            if (Math.Abs(deltaDist) > pcarsData.mTrackLength || j < middle + 1)
+                            {
+                                color = Color.CornflowerBlue;
+                            }
                         }
                     }
 
-                    float time = 0;
-                    try
+                    if (j < middle + 1 && distance < 0)
                     {
-                        time = pcarsData.mBestLapTime > 0 ? pcarsData.mBestLapTime : pcarsData.mPersonalFastestLapTime[myIndex].ltLapTime;
+                        distance = (int)pcarsData.mTrackLength - Math.Abs(distance);
                     }
-                    catch (Exception)
+                    else if (j > middle + 1 && distance > 0)
                     {
-                        time = 0;
+                        distance = -((int)pcarsData.mTrackLength - Math.Abs(distance));
                     }
 
-                    time = (float)Math.Round(distance / pcarsData.mTrackLength * time, 0);
                     addLine((int)item.parRacePosition, item.parName, distance, (int)item.parLapsCompleted, color);
                 }
 
@@ -184,6 +190,21 @@ namespace pCarsRelative
             // Copy window location to app settings
             Properties.Settings.Default.WindowLocation = Location;
             Properties.Settings.Default.Save();
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_MouseDown(object sender, MouseEventArgs e)
+        {
+            richTextBox1_MouseDown(sender, e);
+        }
+
+        private void Form1_MouseDown_1(object sender, MouseEventArgs e)
+        {
+            richTextBox1_MouseDown(sender, e);
         }
     }
 }

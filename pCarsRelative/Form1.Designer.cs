@@ -72,6 +72,8 @@ namespace pCarsRelative
             this.label2.Size = new System.Drawing.Size(396, 19);
             this.label2.TabIndex = 5;
             this.label2.Text = "Pos  Name                       Meters Laps";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
+            this.label2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label2_MouseDown);
             // 
             // Form1
             // 
@@ -87,6 +89,7 @@ namespace pCarsRelative
             this.Text = "Form1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown_1);
             this.ResumeLayout(false);
             this.PerformLayout();
 
