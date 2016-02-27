@@ -159,7 +159,7 @@ namespace pCarsRelative
 
         private void addLine(int position, string name, float distance, int laps, Color color, bool secs)
         {
-            string name25 = name.Length > 25 ? name.Substring(0, 25) : name;
+            string name25 = name.Length > 23 ? name.Substring(0, 23) : name;
             buffer.SelectionStart = buffer.TextLength;
             buffer.SelectionLength = 0;
             buffer.SelectionColor = color;
