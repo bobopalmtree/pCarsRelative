@@ -14,15 +14,18 @@ namespace pCarsRelative
     {
         private DispatcherTimer dispatchTimer = new DispatcherTimer();
         private pCarsDataClass pcarsData;
+        private RichTextBox buffer;
 
         public Form1()
         {
             InitializeComponent();
 
             TopMost = Properties.Settings.Default.AlwaysOnTop;
+            buffer = new RichTextBox();
+            buffer.Font = richTextBox1.Font;
 
             // To avoid flickering when updating the richttextbox.
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
 
             // Set up and start the main loop. 
             dispatchTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(Properties.Settings.Default.UpdateFrequency) };
@@ -89,7 +92,7 @@ namespace pCarsRelative
                 // red = cars that have lapped me or are about to
                 // blue = cars I have lapped or am about to
                 // TODO: grey = cars that have not moved a while
-                richTextBox1.Clear();
+                buffer.Clear();
                 int j = 0;
                 foreach (var item in SortedList)
                 {
@@ -133,9 +136,19 @@ namespace pCarsRelative
                         distance = -((int)pcarsData.mTrackLength - Math.Abs(distance));
                     }
 
-                    addLine((int)item.parRacePosition, item.parName, distance, (int)item.parLapsCompleted, color);
+                    // Convert distance to seconds
+                    float sec = -1;
+                    bool useSecs = false;
+                    if (pcarsData.mSessionFastestLapTime[0].ltLapTime > 0)
+                    {
+                        sec = (distance / pcarsData.mTrackLength) * pcarsData.mSessionFastestLapTime[0].ltLapTime;
+                        useSecs = true;
+                    }
+
+                    addLine((int)item.parRacePosition, item.parName, useSecs ? (float)Math.Round(sec, 1) : distance, (int)item.parLapsCompleted, color, useSecs);
                 }
 
+                richTextBox1.Rtf = buffer.Rtf;
                 Application.DoEvents();
             }
             else
@@ -144,14 +157,15 @@ namespace pCarsRelative
             }
         }
 
-        private void addLine(int position, string name, float distance, int laps, Color color)
+        private void addLine(int position, string name, float distance, int laps, Color color, bool secs)
         {
-            string name25 = name.Length > 25 ? name.Substring(0, 25) : name;
-            richTextBox1.SelectionStart = richTextBox1.TextLength;
-            richTextBox1.SelectionLength = 0;
-            richTextBox1.SelectionColor = color;
-            richTextBox1.AppendText(string.Format("{0, 2}   {1, -25}   {2, 5}   {3, 2}\r\n", position, name25, distance, laps));
-            richTextBox1.SelectionColor = richTextBox1.ForeColor;
+            string name25 = name.Length > 23 ? name.Substring(0, 23) : name;
+            buffer.SelectionStart = buffer.TextLength;
+            buffer.SelectionLength = 0;
+            buffer.SelectionColor = color;
+            string formattedDistance = secs ? String.Format("{0:0.0}", distance) + "s" : distance + "m";
+            buffer.AppendText(string.Format("{0, 2}   {1, -23}   {2, 7}   {3, 2}\r\n", position, name25, formattedDistance, laps));
+            buffer.SelectionColor = buffer.ForeColor;
         }
 
         public const int WM_NCLBUTTONDOWN = 0xA1;

@@ -71,7 +71,7 @@ namespace pCarsRelative
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(396, 19);
             this.label2.TabIndex = 5;
-            this.label2.Text = "Pos  Name                       Meters Laps";
+            this.label2.Text = "Pos  Name                         Gap  Laps";
             this.label2.Click += new System.EventHandler(this.label2_Click);
             this.label2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label2_MouseDown);
             // 
