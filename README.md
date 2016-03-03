@@ -26,7 +26,6 @@ pCarsRelative on top of pCars
 
 Settings/Config file (pCarsRelative.exe.config)
 - KeepMeAtIndex - Default 4, so you yourself appear at line 5. (4 cars above and 4 below)
-
 - AlwaysOnTop - True = Window stays on top of other windows.
 - UpdateFrequency - milliseconds
 
